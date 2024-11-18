@@ -1,17 +1,17 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text } from 'react-native';
+import { Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-// Importy ekranów
-import HomeScreen from './HomeScreen';
-import OrdersScreen from './OrdersScreen';
-import VehiclesScreen from './VehiclesScreen';
-import AccountScreen from './AccountScreen';
+// Importy ekranów dla pracownika
+import EmployeeHomeScreen from './EmployeeHomeScreen';
+import TasksScreen from './EmployeeOrderScreen';
+import AccountEmployeeScreen from './EmployeeAccountScreen';
+import HandOverProtocolScreen from './HandOverProtocolScreen';
 
 const Tab = createBottomTabNavigator();
 
-const CustomerTabNavigator = () => {
+const EmployeeTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -21,13 +21,10 @@ const CustomerTabNavigator = () => {
             case 'Home':
               iconName = 'home-outline';
               break;
-            case 'Orders':
-              iconName = 'list-outline';
+            case 'Tasks':
+              iconName = 'clipboard-outline';
               break;
-            case 'Vehicles':
-              iconName = 'car-outline';
-              break;
-            case 'Account':
+            case 'Profile':
               iconName = 'person-outline';
               break;
             default:
@@ -44,14 +41,11 @@ const CustomerTabNavigator = () => {
             case 'Home':
               label = 'Home';
               break;
-            case 'Orders':
+            case 'Tasks':
               label = 'Zlecenia';
               break;
-            case 'Vehicles':
-              label = 'Pojazdy';
-              break;
-            case 'Account':
-              label = 'Konto';
+            case 'Profile':
+              label = 'Profil';
               break;
             default:
               label = 'Nieznany';
@@ -60,12 +54,21 @@ const CustomerTabNavigator = () => {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Orders" component={OrdersScreen} />
-      <Tab.Screen name="Vehicles" component={VehiclesScreen} />
-      <Tab.Screen name="Account" component={AccountScreen} />
+      <Tab.Screen name="Home" component={EmployeeHomeScreen} />
+      <Tab.Screen name="Tasks" component={TasksScreen} />
+      <Tab.Screen name="Profile" component={AccountEmployeeScreen} />
+      <Tab.Screen
+        name="HandOverProtocol"
+        component={HandOverProtocolScreen}
+        options={{
+          tabBarLabel: 'Protokół',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="document-text-outline" color={color} size={size} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
 
-export default CustomerTabNavigator;
+export default EmployeeTabNavigator;

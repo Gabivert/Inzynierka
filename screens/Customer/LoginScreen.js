@@ -12,11 +12,11 @@ export default function LoginScreen() {
     password: '',
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false); // Stan dla przycisku "Ładowanie"
-  const [errors, setErrors] = useState({}); // Stan dla błędów formularza
-  const [errorMessage, setErrorMessage] = useState(''); // Dodatkowy stan dla komunikatu o błędzie
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const navigation = useNavigation(); // Hook do nawigacji
+  const navigation = useNavigation();
 
   const validateForm = () => {
     const errors = {};
@@ -35,20 +35,17 @@ export default function LoginScreen() {
     setIsSubmitting(true);
     setErrors({});
     setErrorMessage('');
-  
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setIsSubmitting(false);
       return;
     }
-  
+
     try {
-      const { Token } = await loginUser(form);
-  
-      // Zapisujemy token w AsyncStorage
-      await AsyncStorage.setItem('token', Token);
-  
+      // Symulacja logowania
+      await AsyncStorage.setItem('token', 'dummy-client-token');
       Alert.alert('Sukces', 'Zalogowano pomyślnie', [
         { text: 'OK', onPress: () => navigation.replace('CustomerTabNavigator') },
       ]);
@@ -58,7 +55,7 @@ export default function LoginScreen() {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <View className="flex-1 justify-center px-4 py-6 bg-custom-light">
       <Text className="text-2xl font-bold text-black text-center mb-6">

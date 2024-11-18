@@ -1,6 +1,6 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import CustomButton from '../../components/CustomButton';
+import CustomButton from '../../../components/CustomButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function OrdersScreen({ navigation }) {

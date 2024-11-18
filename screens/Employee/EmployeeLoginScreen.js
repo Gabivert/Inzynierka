@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import FormField from '../../components/FormField'; // Komponent do pól formularza
-import CustomButton from '../../components/CustomButton'; // Komponent przycisku
-import { useNavigation } from '@react-navigation/native'; // Hook do nawigacji
+import FormField from '../../components/FormField';
+import CustomButton from '../../components/CustomButton';
+import { useNavigation } from '@react-navigation/native';
 
 export default function EmployeeLoginScreen() {
   const [form, setForm] = useState({
@@ -10,12 +10,11 @@ export default function EmployeeLoginScreen() {
     password: '',
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false); // Stan dla przycisku "Ładowanie"
-  const [errors, setErrors] = useState({}); // Stan dla błędów formularza
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const navigation = useNavigation(); // Hook do nawigacji
+  const navigation = useNavigation();
 
-  // Funkcja do walidacji formularza
   const validateForm = () => {
     const errors = {};
     if (!form.email) {
@@ -29,7 +28,6 @@ export default function EmployeeLoginScreen() {
     return errors;
   };
 
-  // Funkcja do obsługi wysyłania formularza
   const handleSubmit = () => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
@@ -37,9 +35,10 @@ export default function EmployeeLoginScreen() {
       return;
     }
     setIsSubmitting(true);
-    // Simulacja logowania
+    // Symulacja logowania
     setTimeout(() => {
       alert('Zalogowano pomyślnie');
+      navigation.replace('EmployeeTabNavigator');
       setIsSubmitting(false);
     }, 2000);
   };

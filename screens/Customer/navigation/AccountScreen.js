@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Alert } from 'react-native';
 import React, { useState } from 'react';
-import FormField from '../../components/FormField'; // Komponent formularza
-import CustomButton from '../../components/CustomButton'; // Komponent przycisku
+import FormField from '../../../components/FormField'; // Komponent formularza
+import CustomButton from '../../../components/CustomButton'; // Komponent przycisku
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AccountScreen({ navigation }) {

@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from './screens/Customer/HomeScreen';
+import HomeScreen from './screens/Customer/navigation/HomeScreen';
 import WelcomeScreen from './screens/Shared/WelcomeScreen';
 import LoginScreen from './screens/Customer/LoginScreen';
 import RegisterScreen from './screens/Shared/RegisterScreen';
@@ -11,6 +11,8 @@ import OrderDetailsScreen from './screens/Customer/OrderDetailsScreen';
 import PasswordEditScreen from './screens/Customer/PasswordEditScreen';
 import AddOrderScreen from './screens/Customer/AddOrderScreen';
 import AddVehicleScreen from './screens/Customer/AddVehicleScreen';
+import EmployeeTabNavigator from './screens/Employee/navigation/EmployeeTabNavigator';
+import EmployeeOrderDetailsScreen from './screens/Employee/EmployeeOrderDetailsScreen';
 import './global.css';
 
 
@@ -19,7 +21,7 @@ const Stack = createNativeStackNavigator()
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="CustomerTabNavigator">
+      <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen
           name="Welcome"
@@ -64,6 +66,16 @@ export default function App() {
           name="AddVehicle"
           component={AddVehicleScreen}
           options={{ title: 'Dodaj pojazd', headerShown: true }}
+        />
+        <Stack.Screen
+          name="EmployeeTabNavigator"
+          options={{ headerShown: false }}
+          component={EmployeeTabNavigator}
+        />
+        <Stack.Screen
+          name="EmployeeOrderDetails"
+          component={EmployeeOrderDetailsScreen}
+          options={{ title: 'Szczegóły zlecenia', headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>
