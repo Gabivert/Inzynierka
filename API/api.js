@@ -1,43 +1,180 @@
 import axios from 'axios';
+import { API_BASE_URL } from '@env'; // Zmienna środowiskowa
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Aby pobrać token z AsyncStorage
+import { jwtDecode } from "jwt-decode";
 
-const API_BASE_URL = '  https://f0e4-77-255-54-77.ngrok-free.app/api';
-
-// Tworzymy instancję axios z podstawową konfiguracją
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 15000,
-});
-
-// Funkcja rejestracji użytkownika
-export const registerUser = async (data) => {
+// Logowanie klienta
+export const loginUser = async (email, password) => {
   try {
-    const response = await apiClient.post('/Auth/register', data);
-    return response.data;
+    const response = await axios.post(`${API_BASE_URL}/api/Auth/login`, {
+      email,
+      password,
+    });
+    return response.data; // Zakładamy, że serwer zwraca obiekt z tokenem
   } catch (error) {
-    console.log("Error in registerUser:", error.response?.data || error.message);
-    throw new Error(error.response?.data || 'Błąd rejestracji.');
+    console.error('Błąd logowania:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Rejestracja klienta
+export const registerUser = async (form) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/Auth/register`, form);
+    return response.data; // Możesz dostosować, w zależności od tego, co zwraca API
+  } catch (error) {
+    console.error('Błąd rejestracji:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Pobranie danych zalogowanego użytkownika
+export const fetchUserProfile = async () => {
+  try {
+    const token = await AsyncStorage.getItem('token'); // Pobranie tokenu z AsyncStorage
+
+    if (!token) {
+      throw new Error('Brak tokenu autoryzacji');
+    }
+
+    // Dekodowanie tokenu JWT
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken.id; // Upewnij się, że właściwość `id` istnieje w tokenie
+
+    // Pobranie danych użytkownika
+    const response = await axios.get(`${API_BASE_URL}/api/Auth/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data; // Zakładamy, że serwer zwraca dane użytkownika
+  } catch (error) {
+    console.error(
+      'Błąd podczas pobierania danych użytkownika:',
+      error.response?.data || error.message
+    );
+    throw error;
   }
 };
 
 
-// Funkcja logowania użytkownika
-export const loginUser = async (data) => {
+// Aktualizacja danych użytkownika
+export const updateUserData = async (userData) => {
   try {
-    const response = await apiClient.post('/Auth/login', data);
-    return response.data; // Zwracamy odpowiedź
+    const token = await AsyncStorage.getItem('token'); // Pobranie tokenu z AsyncStorage
+
+    if (!token) {
+      throw new Error('Brak tokenu autoryzacji');
+    }
+
+    // Dekodowanie tokenu JWT
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken.id; // ID użytkownika z tokenu
+
+    const response = await axios.put(`${API_BASE_URL}/api/Auth/update/${userId}`, userData, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Token w nagłówku
+      },
+    });
+
+    return response.data; // Zakłada się, że serwer zwraca zaktualizowane dane użytkownika
   } catch (error) {
-    throw new Error(error.response?.data || 'Błąd logowania.');
+    console.error('Błąd podczas aktualizacji danych użytkownika:', error.response?.data || error.message);
+    throw error;
   }
 };
 
-export const testConnection = async () => {
+
+
+// Usunięcie konta użytkownika
+export const deleteUserAccount = async () => {
   try {
-    const response = await apiClient.get('/');
-    console.log("Odpowiedź backendu:", response.status, response.data);
-    return response.data;
+    const token = await AsyncStorage.getItem('token'); // Pobranie tokenu z AsyncStorage
+
+    if (!token) {
+      throw new Error('Brak tokenu autoryzacji');
+    }
+
+    const response = await axios.delete(`${API_BASE_URL}/api/Auth/delete`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Token w nagłówku
+      },
+    });
+
+    return response.data; // Zakłada się, że serwer zwraca potwierdzenie usunięcia
   } catch (error) {
-    console.log("Błąd połączenia z backendem:", error.message);
-    console.log("Szczegóły błędu:", error);
-    throw new Error("Nie można połączyć się z backendem.");
+    console.error('Błąd podczas usuwania konta:', error.response?.data || error.message);
+    throw error;
   }
 };
+
+
+
+// Pobieranie pojazdów użytkownika
+export const fetchVehicles = async () => {
+  try {
+    // Pobranie tokenu z AsyncStorage
+    const token = await AsyncStorage.getItem('token'); 
+    
+    if (!token) {
+      throw new Error('Brak tokenu autoryzacji');
+    }
+
+    const response = await axios.get(`${API_BASE_URL}/api/Vehicle/my-vehicles`, {
+      headers: {
+        Authorization: `Bearer ${token}` // Wysyłanie tokenu w nagłówku
+      }
+    });
+
+    return response.data; // Zakłada się, że serwer zwraca tablicę pojazdów
+  } catch (error) {
+    console.error('Błąd podczas pobierania pojazdów:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Dodanie pojazdu - używamy tokenów do nagłówków aby zapewnić autoryzację klienta
+export const addVehicle = async (vehicleData) => {
+  try {
+    const token = await AsyncStorage.getItem('token'); // Pobranie tokenu z AsyncStorage
+    
+    if (!token) {
+      throw new Error('Brak tokenu autoryzacji');
+    }
+
+    const response = await axios.post(`${API_BASE_URL}/api/Vehicle/add`, vehicleData, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Wysyłanie tokenu w nagłówku
+      },
+    });
+
+    return response.data; // Zakłada się, że serwer zwraca dane nowo dodanego pojazdu
+  } catch (error) {
+    console.error('Błąd podczas dodawania pojazdu:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Aktualizacja pojazdu
+export const updateVehicle = async (vehicleId, vehicleData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/api/Vehicle/update/${vehicleId}`, vehicleData);
+    return response.data; // Zakłada się, że serwer zwraca zaktualizowane dane pojazdu
+  } catch (error) {
+    console.error('Błąd podczas aktualizacji pojazdu:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Usunięcie pojazdu
+export const deleteVehicle = async (vehicleId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/api/Vehicle/delete/${vehicleId}`);
+    return response.data; // Zakłada się, że serwer zwraca potwierdzenie usunięcia
+  } catch (error) {
+    console.error('Błąd podczas usuwania pojazdu:', error.response?.data || error.message);
+    throw error;
+  }
+};
+

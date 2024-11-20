@@ -1,23 +1,20 @@
-import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import React, { useState, useEffect } from 'react'; // Dodano useEffect
-import FormField from '../../components/FormField'; // Komponent do pól formularza
-import CustomButton from '../../components/CustomButton'; // Komponent przycisku
-import { useNavigation } from '@react-navigation/native'; // Hook do nawigacji
-import { registerUser, testConnection } from '../../API/api'; // Dodano testConnection
+import React, { useState } from 'react';
+import { View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import FormField from '../../components/FormField';
+import CustomButton from '../../components/CustomButton';
+import { registerUser } from '../../API/api';
 
-export default function RegisterScreen() {
+const RegisterScreen = ({ navigation }) => {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
     address: '',
-    phoneNumber: '', // Dodano pole numeru telefonu
+    phoneNumber: '',
     email: '',
-    password: '', // Usunięte pole confirmPassword
+    password: '',
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-  const navigation = useNavigation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = () => {
     const errors = {};
@@ -39,51 +36,20 @@ export default function RegisterScreen() {
     return errors;
   };
 
-  // Dodanie testu połączenia z backendem w useEffect
-  useEffect(() => {
-    const checkBackendConnection = async () => {
-      try {
-        console.log("Rozpoczęcie testu połączenia z backendem...");
-        await testConnection();
-        console.log("Backend działa poprawnie.");
-      } catch (error) {
-        console.log("Nie udało się połączyć z backendem:", error.message);
-      }
-    };
-  
-    checkBackendConnection();
-  }, []);
-  
-
   const handleSubmit = async () => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    setErrors({});
+
     setIsSubmitting(true);
-
     try {
-      await registerUser({
-        firstName: form.firstName,
-        lastName: form.lastName,
-        address: form.address,
-        phoneNumber: form.phoneNumber,
-        email: form.email,
-        password: form.password,
-      });
-
-      Alert.alert('Sukces', 'Rejestracja zakończona pomyślnie', [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('Login'),
-        },
-      ]);
+      await registerUser(form);
+      Alert.alert('Sukces!', 'Rejestracja przebiegła pomyślnie!');
+      navigation.navigate('Login');
     } catch (error) {
-      console.log('Error details:', error.message);
-      console.log('Full error object:', error); // Dodatkowe szczegóły błędu
-      Alert.alert('Błąd', error.message || 'Coś poszło nie tak podczas rejestracji.');
+      Alert.alert('Błąd', error.response?.data || 'Coś poszło nie tak.');
     } finally {
       setIsSubmitting(false);
     }
@@ -161,4 +127,6 @@ export default function RegisterScreen() {
       </View>
     </ScrollView>
   );
-}
+};
+
+export default RegisterScreen;

@@ -44,11 +44,19 @@ export default function LoginScreen() {
     }
 
     try {
-      // Symulacja logowania
-      await AsyncStorage.setItem('token', 'dummy-client-token');
-      Alert.alert('Sukces', 'Zalogowano pomyślnie', [
-        { text: 'OK', onPress: () => navigation.replace('CustomerTabNavigator') },
-      ]);
+      // Wywołanie endpointu do logowania
+      const response = await loginUser(form.email, form.password);
+
+      if (response.token) {
+        // Zapisz token w AsyncStorage
+        await AsyncStorage.setItem('token', response.token);
+
+        Alert.alert('Sukces', 'Zalogowano pomyślnie', [
+          { text: 'OK', onPress: () => navigation.replace('CustomerTabNavigator') },
+        ]);
+      } else {
+        throw new Error('Błędny email lub hasło');
+      }
     } catch (error) {
       setErrorMessage('Nieprawidłowy email lub hasło');
     } finally {

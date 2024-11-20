@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import CustomButton from '../../components/CustomButton';
 import FormField from '../../components/FormField';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { addVehicle } from '../../API/api.js'; // Import funkcji do dodawania pojazdu
 
 export default function AddVehicleScreen({ navigation }) {
   const [form, setForm] = useState({
@@ -13,16 +14,35 @@ export default function AddVehicleScreen({ navigation }) {
     registrationNumber: '',
   });
 
-  const handleAddVehicle = () => {
+  const handleAddVehicle = async () => {
     const { brand, model, year, vin, registrationNumber } = form;
 
+    console.log("Rocznik przed wysłaniem:", year); // Sprawdzenie wartości przed wysłaniem
+
+    // Walidacja formularza
     if (!brand || !model || !year || !vin || !registrationNumber) {
       Alert.alert('Błąd', 'Uzupełnij wszystkie pola!');
       return;
     }
 
-    Alert.alert('Sukces', 'Pojazd został dodany!');
-    navigation.goBack(); // Powrót do zakładki pojazdów
+    try {
+      // Konwersja rocznika na liczbę
+      const vehicleData = { 
+        brand, 
+        model, 
+        year: parseInt(year, 10), 
+        vin, 
+        registrationNumber 
+      };
+
+      // Wywołanie funkcji do dodania pojazdu
+      await addVehicle(vehicleData); 
+
+      Alert.alert('Sukces', 'Pojazd został dodany!');
+      navigation.goBack(); // Powrót do zakładki pojazdów
+    } catch (error) {
+      Alert.alert('Błąd', 'Nie udało się dodać pojazdu.');
+    }
   };
 
   return (
@@ -44,9 +64,9 @@ export default function AddVehicleScreen({ navigation }) {
         />
         <FormField
           title="Rocznik"
-          value={form.year.toString()}
+          value={form.year.toString()} // Zapewnienie, że rocznik jest ciągiem znaków
           handleChangeText={(e) => setForm({ ...form, year: e })}
-          keyboardType="numeric"
+          keyboardType="numeric" // Klawiatura numeryczna dla roku
           otherStyle="mb-4"
         />
         <FormField

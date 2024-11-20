@@ -13,6 +13,7 @@ import AddOrderScreen from './screens/Customer/AddOrderScreen';
 import AddVehicleScreen from './screens/Customer/AddVehicleScreen';
 import EmployeeTabNavigator from './screens/Employee/navigation/EmployeeTabNavigator';
 import EmployeeOrderDetailsScreen from './screens/Employee/EmployeeOrderDetailsScreen';
+import AccountEditScreen from './screens/Customer/AccountEditScreen';
 import './global.css';
 
 
@@ -76,6 +77,11 @@ export default function App() {
           name="EmployeeOrderDetails"
           component={EmployeeOrderDetailsScreen}
           options={{ title: 'Szczegóły zlecenia', headerShown: true }}
+        />
+        <Stack.Screen
+          name="AccountEdit"
+          component={AccountEditScreen}
+          options={{ title: 'Edytuj dane', headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>
