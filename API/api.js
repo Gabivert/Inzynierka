@@ -172,8 +172,22 @@ export const addVehicle = async (vehicleData) => {
 // Aktualizacja pojazdu
 export const updateVehicle = async (vehicleId, vehicleData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/api/Vehicle/update/${vehicleId}`, vehicleData);
-    return response.data; // Zakłada się, że serwer zwraca zaktualizowane dane pojazdu
+    const token = await AsyncStorage.getItem('token'); // Pobranie tokena z pamięci
+    if (!token) {
+      throw new Error('Brak tokena uwierzytelniającego');
+    }
+
+    const response = await axios.put(
+      `${API_BASE_URL}/api/Vehicle/update/${vehicleId}`,
+      vehicleData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Dodanie tokena JWT do nagłówka
+        },
+      }
+    );
+
+    return response.data; // Zwracanie danych z odpowiedzi
   } catch (error) {
     console.error('Błąd podczas aktualizacji pojazdu:', error.response?.data || error.message);
     throw error;
