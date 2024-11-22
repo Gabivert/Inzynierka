@@ -66,8 +66,8 @@ export default function VehiclesScreen({ navigation }) {
 
   const renderVehicle = ({ item }) => (
     <View className="bg-white p-4 mb-4 rounded-lg shadow">
-      <Text className="text-lg font-bold">{item.make} {item.model}</Text>
-      <Text className="text-sm text-gray-600">Rocznik: {item.year}</Text>
+      <Text className="text-lg font-bold">{item.brand} {item.model}</Text>
+      <Text className="text-sm text-gray-600">Rocznik: {item.productionYear}</Text>
       <Text className="text-sm text-gray-600">VIN: {item.vin}</Text>
       <Text className="text-sm text-gray-600">Nr rej.: {item.registrationNumber}</Text>
 

@@ -137,24 +137,37 @@ export const fetchVehicles = async () => {
 // Dodanie pojazdu - używamy tokenów do nagłówków aby zapewnić autoryzację klienta
 export const addVehicle = async (vehicleData) => {
   try {
+    // Logowanie danych pojazdu przed wysłaniem do backendu
+    console.log("Dane do serializacji:", vehicleData);
+    
     const token = await AsyncStorage.getItem('token'); // Pobranie tokenu z AsyncStorage
     
     if (!token) {
       throw new Error('Brak tokenu autoryzacji');
     }
 
-    const response = await axios.post(`${API_BASE_URL}/api/Vehicle/add`, vehicleData, {
-      headers: {
-        Authorization: `Bearer ${token}`, // Wysyłanie tokenu w nagłówku
-      },
-    });
-
+    const response = await axios.post(
+      `${API_BASE_URL}/api/Vehicle/add`,
+      JSON.stringify({
+        ...vehicleData,
+        productionYear: vehicleData.productionYear,  // Zmieniamy nazwę z "year" na "productionYear"
+      }), // Serializacja danych
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Token do nagłówka autoryzacji
+          'Content-Type': 'application/json', // Ustawienie odpowiedniego nagłówka
+        },
+      }
+    );
+    
     return response.data; // Zakłada się, że serwer zwraca dane nowo dodanego pojazdu
   } catch (error) {
+    // Logowanie błędów
     console.error('Błąd podczas dodawania pojazdu:', error.response?.data || error.message);
     throw error;
   }
 };
+
 
 // Aktualizacja pojazdu
 export const updateVehicle = async (vehicleId, vehicleData) => {
@@ -170,11 +183,22 @@ export const updateVehicle = async (vehicleId, vehicleData) => {
 // Usunięcie pojazdu
 export const deleteVehicle = async (vehicleId) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/api/Vehicle/delete/${vehicleId}`);
-    return response.data; // Zakłada się, że serwer zwraca potwierdzenie usunięcia
+    const token = await AsyncStorage.getItem('token'); // Pobranie tokenu z AsyncStorage
+    if (!token) {
+      throw new Error('Brak tokenu autoryzacji');
+    }
+
+    const response = await axios.delete(`${API_BASE_URL}/api/Vehicle/delete/${vehicleId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data; // Możesz tutaj dostosować, co zwraca API po usunięciu pojazdu
   } catch (error) {
     console.error('Błąd podczas usuwania pojazdu:', error.response?.data || error.message);
     throw error;
   }
 };
+
 

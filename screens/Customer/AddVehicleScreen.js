@@ -9,41 +9,49 @@ export default function AddVehicleScreen({ navigation }) {
   const [form, setForm] = useState({
     brand: '',
     model: '',
-    year: '',
+    productionYear: '',
     vin: '',
     registrationNumber: '',
   });
 
-  const handleAddVehicle = async () => {
-    const { brand, model, year, vin, registrationNumber } = form;
+ const handleAddVehicle = async () => {
+  const { brand, model, productionYear, vin, registrationNumber } = form;
 
-    console.log("Rocznik przed wysłaniem:", year); // Sprawdzenie wartości przed wysłaniem
+  console.log("Rocznik przed wysłaniem:", productionYear); // Sprawdzenie wartości przed wysłaniem
 
-    // Walidacja formularza
-    if (!brand || !model || !year || !vin || !registrationNumber) {
-      Alert.alert('Błąd', 'Uzupełnij wszystkie pola!');
-      return;
-    }
+  // Walidacja formularza
+  if (!brand || !model || !productionYear || !vin || !registrationNumber) {
+    Alert.alert('Błąd', 'Uzupełnij wszystkie pola!');
+    return;
+  }
 
-    try {
-      // Konwersja rocznika na liczbę
-      const vehicleData = { 
-        brand, 
-        model, 
-        year: parseInt(year, 10), 
-        vin, 
-        registrationNumber 
-      };
+  // Konwersja rocznika na liczbę
+  const productionYearInt = parseInt(productionYear, 10);
 
-      // Wywołanie funkcji do dodania pojazdu
-      await addVehicle(vehicleData); 
+  if (isNaN(productionYearInt) || productionYearInt < 1900 || productionYearInt > 2030) {
+    Alert.alert('Błąd', 'Podaj prawidłowy rocznik (1900-2030).');
+    return;
+  }
 
-      Alert.alert('Sukces', 'Pojazd został dodany!');
-      navigation.goBack(); // Powrót do zakładki pojazdów
-    } catch (error) {
-      Alert.alert('Błąd', 'Nie udało się dodać pojazdu.');
-    }
-  };
+  try {
+    const vehicleData = { 
+      brand, 
+      model, 
+      productionYear: productionYearInt, // Wysłanie rocznika jako liczby
+      vin, 
+      registrationNumber 
+    };
+
+    await addVehicle(vehicleData); 
+
+    Alert.alert('Sukces', 'Pojazd został dodany!');
+    navigation.goBack(); // Powrót do zakładki pojazdów
+  } catch (error) {
+    Alert.alert('Błąd', 'Nie udało się dodać pojazdu.');
+    console.error('Błąd API:', error.response?.data || error.message);
+  }
+};
+
 
   return (
     <SafeAreaView className="flex-1 bg-custom-light p-4">
@@ -64,8 +72,8 @@ export default function AddVehicleScreen({ navigation }) {
         />
         <FormField
           title="Rocznik"
-          value={form.year.toString()} // Zapewnienie, że rocznik jest ciągiem znaków
-          handleChangeText={(e) => setForm({ ...form, year: e })}
+          value={form.productionYear.toString()} // Zapewnienie, że rocznik jest ciągiem znaków
+          handleChangeText={(e) => setForm({ ...form, productionYear: e })}
           keyboardType="numeric" // Klawiatura numeryczna dla roku
           otherStyle="mb-4"
         />
