@@ -68,9 +68,9 @@ export const updateUserData = async (userData) => {
       throw new Error('Brak tokenu autoryzacji');
     }
 
-    // Dekodowanie tokenu JWT
+    // Pobranie ID użytkownika z tokenu JWT
     const decodedToken = jwtDecode(token);
-    const userId = decodedToken.id; // ID użytkownika z tokenu
+    const userId = decodedToken.id;
 
     const response = await axios.put(`${API_BASE_URL}/api/Auth/update/${userId}`, userData, {
       headers: {
@@ -78,17 +78,41 @@ export const updateUserData = async (userData) => {
       },
     });
 
-    return response.data; // Zakłada się, że serwer zwraca zaktualizowane dane użytkownika
+    return response.data; // Zwracane dane użytkownika
   } catch (error) {
     console.error('Błąd podczas aktualizacji danych użytkownika:', error.response?.data || error.message);
     throw error;
   }
 };
 
+// Weryfikacja hasła użytkownika
+export const verifyPassword = async (password) => {
+  try {
+    const token = await AsyncStorage.getItem('token'); // Pobranie tokenu z AsyncStorage
+    if (!token) {
+      throw new Error('Brak tokenu autoryzacji');
+    }
+
+    const response = await axios.post(
+      `${API_BASE_URL}/api/Auth/verify-password`,
+      { password }, // Wysyłamy tylko hasło
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Token w nagłówku
+        },
+      }
+    );
+
+    return response.data; // Zakładamy, że serwer zwraca potwierdzenie
+  } catch (error) {
+    console.error('Błąd podczas weryfikacji hasła:', error.response?.data || error.message);
+    throw error;
+  }
+};
 
 
 // Usunięcie konta użytkownika
-export const deleteUserAccount = async () => {
+export const deleteUserAccount = async (userId) => {
   try {
     const token = await AsyncStorage.getItem('token'); // Pobranie tokenu z AsyncStorage
 
@@ -96,19 +120,18 @@ export const deleteUserAccount = async () => {
       throw new Error('Brak tokenu autoryzacji');
     }
 
-    const response = await axios.delete(`${API_BASE_URL}/api/Auth/delete`, {
+    const response = await axios.delete(`${API_BASE_URL}/api/Auth/delete/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`, // Token w nagłówku
       },
     });
 
-    return response.data; // Zakłada się, że serwer zwraca potwierdzenie usunięcia
+    return response.data; // Zakładamy, że serwer zwraca potwierdzenie usunięcia
   } catch (error) {
     console.error('Błąd podczas usuwania konta:', error.response?.data || error.message);
     throw error;
   }
 };
-
 
 
 // Pobieranie pojazdów użytkownika

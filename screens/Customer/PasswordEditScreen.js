@@ -2,17 +2,23 @@ import React, { useState } from 'react';
 import { View, Text, Alert } from 'react-native';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
+import { verifyPassword, updateUserData } from '../../API/api'; // Importujemy funkcje API
 
 export default function PasswordEditScreen() {
   const [form, setForm] = useState({
+    currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   });
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = () => {
     const errors = {};
+    if (!form.currentPassword) {
+      errors.currentPassword = 'Obecne hasło jest wymagane';
+    }
     if (!form.newPassword) {
       errors.newPassword = 'Nowe hasło jest wymagane';
     } else if (form.newPassword.length < 6) {
@@ -26,19 +32,46 @@ export default function PasswordEditScreen() {
     return errors;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setErrors({});
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      setIsSubmitting(false);
       return;
     }
 
-    Alert.alert('Sukces', 'Hasło zostało zmienione', [{ text: 'OK' }]);
+    try {
+      // Weryfikacja obecnego hasła
+      await verifyPassword(form.currentPassword);
+
+      // Jeśli weryfikacja się powiodła, zmieniamy hasło
+      await updateUserData({ password: form.newPassword });
+      Alert.alert('Sukces', 'Hasło zostało zmienione', [{ text: 'OK' }]);
+    } catch (error) {
+      Alert.alert(
+        'Błąd',
+        error.response?.data || 'Nie udało się zmienić hasła. Sprawdź obecne hasło i spróbuj ponownie.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <View className="flex-1 justify-center px-4 bg-custom-light">
       <Text className="text-2xl font-bold text-black text-center mb-6">Zmiana hasła</Text>
+
+      <FormField
+        title="Obecne hasło"
+        value={form.currentPassword}
+        handleChangeText={(text) => setForm({ ...form, currentPassword: text })}
+        secureTextEntry
+        errorMessage={errors.currentPassword}
+        otherStyle="mb-4"
+      />
 
       <FormField
         title="Nowe hasło"
@@ -58,7 +91,12 @@ export default function PasswordEditScreen() {
         otherStyle="mb-6"
       />
 
-      <CustomButton title="Zmień hasło" onPress={handleSubmit} className="bg-custom-dark" />
+      <CustomButton
+        title={isSubmitting ? 'Zapisywanie...' : 'Zmień hasło'}
+        onPress={handleSubmit}
+        isLoading={isSubmitting}
+        className="bg-custom-dark"
+      />
     </View>
   );
 }

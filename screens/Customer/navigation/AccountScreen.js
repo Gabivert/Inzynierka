@@ -1,4 +1,3 @@
-// screens/Customer/AccountScreen.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,23 +22,35 @@ export default function AccountScreen({ navigation }) {
 
   // Funkcja do obsługi usunięcia konta
   const handleDeleteAccount = async () => {
+    if (!user?.id) {
+      Alert.alert('Błąd', 'Nie znaleziono identyfikatora użytkownika.');
+      return;
+    }
+
     Alert.alert(
       'Potwierdzenie',
-      'Czy na pewno chcesz usunąć swoje konto?',
+      'Czy na pewno chcesz usunąć swoje konto? Upewnij się, że wszystkie pojazdy zostały usunięte.',
       [
         { text: 'Nie', style: 'cancel' },
         {
           text: 'Tak',
           onPress: async () => {
             try {
-              await deleteUserAccount();
+              await deleteUserAccount(user.id); // Przekazujemy identyfikator użytkownika
               Alert.alert('Sukces', 'Twoje konto zostało usunięte.');
               navigation.reset({
                 index: 0,
-                routes: [{ name: 'LoginScreen' }], // Powrót do logowania
+                routes: [{ name: 'Login' }], // Powrót do logowania
               });
             } catch (error) {
-              Alert.alert('Błąd', 'Nie udało się usunąć konta. Spróbuj ponownie.');
+              if (error.response?.status === 400) {
+                Alert.alert(
+                  'Błąd',
+                  'Nie możesz usunąć konta, dopóki nie usuniesz powiązanych pojazdów.'
+                );
+              } else {
+                Alert.alert('Błąd', 'Nie udało się usunąć konta. Spróbuj ponownie.');
+              }
             }
           },
         },
