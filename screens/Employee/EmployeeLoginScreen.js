@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
-import { loginEmployee } from '../../API/Employee_api';
+import { loginEmployeeOrManager } from '../../API/Employee_api';
 
 export default function EmployeeLoginScreen() {
   const [form, setForm] = useState({
@@ -41,11 +41,17 @@ export default function EmployeeLoginScreen() {
     }
 
     try {
-      // Wywołanie funkcji logowania dla pracownika
-      const token = await loginEmployee(form.email, form.password);
+      // Wywołanie funkcji logowania dla pracownika lub kierownika
+      const { token, role } = await loginEmployeeOrManager(form.email, form.password);
 
       Alert.alert('Sukces', 'Zalogowano pomyślnie.', [
-        { text: 'OK', onPress: () => navigation.replace('EmployeeTabNavigator') },
+        {
+          text: 'OK',
+          onPress: () =>
+            role === 'Employee'
+              ? navigation.replace('EmployeeTabNavigator')
+              : navigation.replace('ManagerTabNavigator'), // Przekierowanie na dashboard kierownika
+        },
       ]);
     } catch (error) {
       Alert.alert('Błąd', error.response?.data || 'Nie udało się zalogować. Sprawdź dane logowania.');
@@ -57,7 +63,7 @@ export default function EmployeeLoginScreen() {
   return (
     <View className="flex-1 justify-center px-4 py-6 bg-custom-light">
       <Text className="text-2xl font-bold text-black text-center mb-6">
-        Zaloguj się do systemu dla pracowników
+        Logowanie do panelu pracownika
       </Text>
 
       <FormField
