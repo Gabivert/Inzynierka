@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import FormField from '../../components/FormField'; // Komponent formularza
 import CustomButton from '../../components/CustomButton'; // Przyciski z Tailwind
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { updateVehicle } from '../../API/api'; // Import funkcji API
+import { updateVehicle } from '../../API/Vehicle_api'; // Import funkcji API
 
 export default function VehiclesEditScreen({ route, navigation }) {
   const { vehicle } = route.params; // Dane pojazdu przekazane przez nawigację

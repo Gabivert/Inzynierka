@@ -14,6 +14,7 @@ import AddVehicleScreen from './screens/Customer/AddVehicleScreen';
 import EmployeeTabNavigator from './screens/Employee/navigation/EmployeeTabNavigator';
 import EmployeeOrderDetailsScreen from './screens/Employee/EmployeeOrderDetailsScreen';
 import AccountEditScreen from './screens/Customer/AccountEditScreen';
+import ManagerTabNavigator from './screens/Manager/navigation/ManagerTabNavigator';
 import './global.css';
 
 
@@ -83,6 +84,7 @@ export default function App() {
           component={AccountEditScreen}
           options={{ title: 'Edytuj dane', headerShown: true }}
         />
+        <Stack.Screen name="ManagerTabNavigator" component={ManagerTabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );

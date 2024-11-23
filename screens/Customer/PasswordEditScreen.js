@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Alert } from 'react-native';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
-import { verifyPassword, updateUserData } from '../../API/api'; // Importujemy funkcje API
+import { verifyPassword, updateUserData } from '../../API/Client_api'; // Importujemy funkcje API
 
 export default function PasswordEditScreen() {
   const [form, setForm] = useState({

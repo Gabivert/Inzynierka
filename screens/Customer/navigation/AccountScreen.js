@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { fetchUserProfile, deleteUserAccount } from '../../../API/api';
+import { fetchUserProfile, deleteUserAccount } from '../../../API/Client_api';
 import CustomButton from '../../../components/CustomButton';
 
 export default function AccountScreen({ navigation }) {

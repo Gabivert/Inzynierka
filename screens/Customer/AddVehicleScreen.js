@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import CustomButton from '../../components/CustomButton';
 import FormField from '../../components/FormField';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { addVehicle } from '../../API/api.js'; // Import funkcji do dodawania pojazdu
+import { addVehicle } from '../../API/Vehicle_api'; // Import funkcji do dodawania pojazdu
 
 export default function AddVehicleScreen({ navigation }) {
   const [form, setForm] = useState({

@@ -1,6 +1,7 @@
 import { View, Text, FlatList, Alert, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { fetchVehicles, deleteVehicle } from '../../../API/api.js'; // Zaimportowanie funkcji API
+import { fetchVehicles } from '../../../API/Vehicle_api.js';
+import { deleteVehicle } from '../../../API/Vehicle_api.js';
 import CustomButton from '../../../components/CustomButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

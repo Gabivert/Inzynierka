@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
-import { registerUser } from '../../API/api';
+import { registerUser } from '../../API/Client_api';
 
 const RegisterScreen = ({ navigation }) => {
   const [form, setForm] = useState({

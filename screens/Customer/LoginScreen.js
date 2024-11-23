@@ -4,7 +4,7 @@ import FormField from '../../components/FormField'; // Komponent do pól formula
 import CustomButton from '../../components/CustomButton'; // Komponent przycisku
 import { useNavigation } from '@react-navigation/native'; // Hook do nawigacji
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loginUser } from '../../API/api'; // Importujemy funkcję loginUser
+import { loginUser } from '../../API/Client_api'; // Importujemy funkcję loginUser
 
 export default function LoginScreen() {
   const [form, setForm] = useState({

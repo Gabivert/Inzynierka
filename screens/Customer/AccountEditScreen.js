@@ -3,7 +3,7 @@ import { View, Text, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
-import { updateUserData, verifyPassword } from '../../API/api'; // Importujemy funkcje API
+import { updateUserData, verifyPassword } from '../../API/Client_api'; // Importujemy funkcje API
 
 export default function AccountEditScreen({ route, navigation }) {
   const { userData } = route.params; // Dane użytkownika
