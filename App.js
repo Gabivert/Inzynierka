@@ -15,6 +15,7 @@ import EmployeeTabNavigator from './screens/Employee/navigation/EmployeeTabNavig
 import EmployeeOrderDetailsScreen from './screens/Employee/EmployeeOrderDetailsScreen';
 import AccountEditScreen from './screens/Customer/AccountEditScreen';
 import ManagerTabNavigator from './screens/Manager/navigation/ManagerTabNavigator';
+import ManagerOrderDetailsScreen from './screens/Manager/ManagerOrderDetailsScreen';
 import './global.css';
 
 
@@ -84,7 +85,12 @@ export default function App() {
           component={AccountEditScreen}
           options={{ title: 'Edytuj dane', headerShown: true }}
         />
-        <Stack.Screen name="ManagerTabNavigator" component={ManagerTabNavigator} />
+        <Stack.Screen name="ManagerTabNavigator" component={ManagerTabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen
+        name="ManagerOrderDetails"
+        component={ManagerOrderDetailsScreen}
+        options={{ title: 'Szczegóły zlecenia', headerShown: false }}
+      />
       </Stack.Navigator>
     </NavigationContainer>
   );

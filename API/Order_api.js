@@ -1,50 +1,68 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL } from '@env';
+import { getAuthToken } from './AuthHelper'; // Import pomocniczej funkcji
 
-// Dodanie nowego zlecenia
-export const addOrder = async (orderData) => {
+// Pobieranie listy zleceń klienta
+export const fetchClientOrders = async () => {
   try {
-    const token = await AsyncStorage.getItem('token');
-    if (!token) {
-      throw new Error('Brak tokena uwierzytelniającego. Zaloguj się ponownie.');
-    }
-
-    const response = await axios.post(
-      `${API_BASE_URL}/api/Reservation/finalize`,
-      orderData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    console.log('Odpowiedź z API:', response.data);
-    return response.data;
+    const token = await getAuthToken(); // Pobierz token
+    const response = await axios.get(`${API_BASE_URL}/api/Reservation/client`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Dodaj token do nagłówków
+      },
+    });
+    return response.data; // Bez dodatkowego mapowania
   } catch (error) {
-    console.error('Błąd podczas dodawania zlecenia:', error.response?.data || error.message);
+    console.error('Błąd podczas pobierania zleceń klienta:', error.response?.data || error.message);
     throw error;
   }
 };
 
-// Pobieranie zleceń klienta
-export const fetchClientOrders = async () => {
-  try {
-    const token = await AsyncStorage.getItem('token');
-    if (!token) {
-      throw new Error('Brak tokena uwierzytelniającego. Zaloguj się ponownie.');
-    }
 
-    const response = await axios.get(`${API_BASE_URL}/api/Reservation/client`, {
+// Pobieranie szczegółów konkretnego zlecenia
+export const fetchOrderDetails = async (orderId) => {
+  try {
+    const token = await getAuthToken(); // Pobierz token
+    const response = await axios.get(`${API_BASE_URL}/api/Reservation/${orderId}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`, // Dodaj token do nagłówków
       },
     });
-
-    console.log('Otrzymane zlecenia:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Błąd podczas pobierania zleceń klienta:', error.response?.data || error.message);
+    console.error('Błąd podczas pobierania szczegółów zlecenia:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Pobieranie danych początkowych (zajęte sloty i dostępne usługi)
+export const fetchInitialData = async () => {
+  try {
+    const token = await getAuthToken(); // Pobranie tokenu przez AuthHelper
+    const response = await axios.get(`${API_BASE_URL}/api/reservation/init`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Dodanie tokenu w nagłówku
+      },
+    });
+    return response.data; // Zwróć dane z API
+  } catch (error) {
+    console.error('Błąd podczas pobierania danych początkowych:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Finalizacja rezerwacji (dodawanie nowego zlecenia)
+export const addOrder = async (orderData) => {
+  try {
+    const token = await getAuthToken(); // Pobranie tokenu przez AuthHelper
+    const response = await axios.post(`${API_BASE_URL}/api/reservation/finalize`, orderData, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Dodanie tokenu w nagłówku
+      },
+    });
+    return response.data; // Zwróć dane z odpowiedzi API
+  } catch (error) {
+    console.error('Błąd podczas finalizacji rezerwacji:', error.response?.data || error.message);
     throw error;
   }
 };

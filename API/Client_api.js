@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_BASE_URL } from '@env'; // Zmienna środowiskowa
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Aby pobrać token z AsyncStorage
+import { getAuthToken } from './AuthHelper'; // Import pomocniczej funkcji
 import { jwtDecode } from "jwt-decode";
 
 // Logowanie klienta
@@ -31,24 +31,17 @@ export const registerUser = async (form) => {
 // Pobranie danych zalogowanego użytkownika
 export const fetchUserProfile = async () => {
   try {
-    const token = await AsyncStorage.getItem('token'); // Pobranie tokenu z AsyncStorage
+    const token = await getAuthToken(); // Pobierz token
+    const decodedToken = jwtDecode(token); // Dekodowanie tokenu JWT
+    const userId = decodedToken.id; // Sprawdź, czy token zawiera `id`
 
-    if (!token) {
-      throw new Error('Brak tokenu autoryzacji');
-    }
-
-    // Dekodowanie tokenu JWT
-    const decodedToken = jwtDecode(token);
-    const userId = decodedToken.id; // Upewnij się, że właściwość `id` istnieje w tokenie
-
-    // Pobranie danych użytkownika
     const response = await axios.get(`${API_BASE_URL}/api/Auth/${userId}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`, // Token w nagłówku
       },
     });
 
-    return response.data; // Zakładamy, że serwer zwraca dane użytkownika
+    return response.data;
   } catch (error) {
     console.error(
       'Błąd podczas pobierania danych użytkownika:',
@@ -56,7 +49,7 @@ export const fetchUserProfile = async () => {
     );
     throw error;
   }
-};
+}
 
 
 // Aktualizacja danych użytkownika
@@ -132,6 +125,5 @@ export const deleteUserAccount = async (userId) => {
     throw error;
   }
 };
-
 
 
