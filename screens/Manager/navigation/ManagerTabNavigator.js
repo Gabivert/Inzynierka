@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AssignEmployeeScreen from './AssignEmployeeScreen';
 import UnfinishedOrdersScreen from './UnfinishedOrdersScreen';
 import CompletedOrdersScreen from './CompletedOrdersScreen';
+import AssignedOrdersScreen from './AssignedOrdersScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,8 +26,16 @@ export default function ManagerTabNavigator() {
         name="CompletedOrders"
         component={CompletedOrdersScreen}
         options={{
-          title: 'Ukończone zlecenia',
+          title: 'Historia zleceń',
           headerShown: false, // Wyłączamy nagłówek
+        }}
+      />
+      <Tab.Screen
+        name="AssignedOrders"
+        component={AssignedOrdersScreen} // Nowy ekran
+        options={{
+          title: 'Wyloguj',
+          headerShown: false,
         }}
       />
     </Tab.Navigator>
