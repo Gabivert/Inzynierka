@@ -158,6 +158,12 @@ export default function EmployeeOrderDetailsScreen({ route, navigation }) {
             />
           )}
 
+          <CustomButton
+            title="Edycja"
+            onPress={() => navigation.navigate('PartsDetails', { orderId, parts: orderDetails.parts })}
+            className="bg-custom-blue mt-2"
+          />
+
           {/* Formularz dodawania części */}
           {isAddingPart && (
             <View className="mt-4">

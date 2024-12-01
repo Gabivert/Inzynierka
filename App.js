@@ -16,8 +16,8 @@ import EmployeeOrderDetailsScreen from './screens/Employee/EmployeeOrderDetailsS
 import AccountEditScreen from './screens/Customer/AccountEditScreen';
 import ManagerTabNavigator from './screens/Manager/navigation/ManagerTabNavigator';
 import ManagerOrderDetailsScreen from './screens/Manager/ManagerOrderDetailsScreen';
+import PartsDetailsScreen from './screens/Employee/PartsDetailsScreen';
 import './global.css';
-
 
 const Stack = createNativeStackNavigator()
 
@@ -91,7 +91,13 @@ export default function App() {
         component={ManagerOrderDetailsScreen}
         options={{ title: 'Szczegóły zlecenia', headerShown: false }}
       />
+      <Stack.Screen
+          name="PartsDetails"
+          component={PartsDetailsScreen}
+          options={{ title: 'Edytuj dane', headerShown: true }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
