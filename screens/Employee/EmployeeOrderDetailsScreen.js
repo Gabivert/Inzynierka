@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { fetchOrderDetails } from '../../API/Order_api';
 import { markOrderAsComplete } from '../../API/Employee_api';
 import { addPartToOrder } from '../../API/Parts_api';
+import { addCommentToOrder } from '../../API/Employee_api';
 import CustomButton from '../../components/CustomButton';
 
 export default function EmployeeOrderDetailsScreen({ route, navigation }) {
@@ -13,6 +14,8 @@ export default function EmployeeOrderDetailsScreen({ route, navigation }) {
   const [updating, setUpdating] = useState(false); // Stan aktualizacji statusu
   const [isAddingPart, setIsAddingPart] = useState(false); // Kontrola widoczności formularza
   const [part, setPart] = useState({ name: '', serialNumber: '', quantity: '', price: '' });
+  const [comment, setComment] = useState(''); // Treść komentarza
+  const [isAddingComment, setIsAddingComment] = useState(false); // Kontrola widoczności formularza komentarza
 
   // Pobranie szczegółów zlecenia
   const loadOrderDetails = async () => {
@@ -89,6 +92,25 @@ export default function EmployeeOrderDetailsScreen({ route, navigation }) {
     }
   };
 
+  // Funkcja dodawania komentarza
+  const handleAddComment = async () => {
+    try {
+      if (!comment.trim()) {
+        Alert.alert('Błąd', 'Komentarz nie może być pusty.');
+        return;
+      }
+
+      await addCommentToOrder(orderId, comment);
+      Alert.alert('Sukces', 'Komentarz został dodany do zlecenia.');
+      setComment(''); // Resetuj formularz
+      setIsAddingComment(false); // Ukryj formularz
+      loadOrderDetails(); // Odśwież szczegóły zlecenia
+    } catch (error) {
+      console.error('Błąd podczas dodawania komentarza do zlecenia:', error.message);
+      Alert.alert('Błąd', 'Nie udało się dodać komentarza do zlecenia.');
+    }
+  };
+
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
@@ -114,6 +136,39 @@ export default function EmployeeOrderDetailsScreen({ route, navigation }) {
           <Text className="text-sm text-gray-600">Data zakończenia: {new Date(orderDetails.estimatedEndDate).toLocaleString()}</Text>
           <Text className="text-sm text-gray-600">Status: {orderDetails.status}</Text>
           <Text className="text-sm text-gray-600">Komentarz: {orderDetails.comment || 'Brak komentarzy'}</Text>
+        </View>
+
+        {/* Formularz dodawania komentarza */}
+        <View className="bg-white p-4 mb-6 rounded-lg shadow">
+          <Text className="text-lg font-bold">Dodaj komentarz</Text>
+          {!isAddingComment && (
+            <CustomButton
+              title="Dodaj komentarz"
+              onPress={() => setIsAddingComment(true)}
+              className="bg-blue-500 mt-4"
+            />
+          )}
+          {isAddingComment && (
+            <View className="mt-4">
+              <TextInput
+                placeholder="Wpisz komentarz"
+                value={comment}
+                onChangeText={setComment}
+                multiline
+                className="border p-2 mb-2 rounded"
+              />
+              <CustomButton
+                title="Dodaj komentarz"
+                onPress={handleAddComment}
+                className="bg-green-500"
+              />
+              <CustomButton
+                title="Anuluj"
+                onPress={() => setIsAddingComment(false)}
+                className="bg-red-500 mt-2"
+              />
+            </View>
+          )}
         </View>
 
         {/* Sekcja pojazdu */}

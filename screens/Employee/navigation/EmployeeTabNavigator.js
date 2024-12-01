@@ -5,9 +5,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 // Importy ekranów dla pracownika
 import EmployeeHomeScreen from './EmployeeHomeScreen';
-import TasksScreen from './EmployeeOrderScreen';
+import TasksScreen from './EmployeeOrderScreen'; //chyba nie potrzebne bo juz jest EmployeeOrderScreen
 import AccountEmployeeScreen from './EmployeeAccountScreen';
-import HandOverProtocolScreen from './HandOverProtocolScreen';
+import ProtocolOrdersScreen from './ProtocolOrdersScreen';
 import EmployeeOrderScreen from './EmployeeOrderScreen';
 
 const Tab = createBottomTabNavigator();
@@ -49,7 +49,7 @@ const EmployeeTabNavigator = () => {
               label = 'Profil';
               break;
             default:
-              label = 'Nieznany';
+              label = 'Protocols';
           }
           return <Text style={{ color: focused ? '#6200EE' : 'gray' }}>{label}</Text>;
         },
@@ -60,7 +60,7 @@ const EmployeeTabNavigator = () => {
       <Tab.Screen name="Profile" component={AccountEmployeeScreen} />
       <Tab.Screen
         name="HandOverProtocol"
-        component={HandOverProtocolScreen}
+        component={ProtocolOrdersScreen}
         options={{
           tabBarLabel: 'Protokół',
           tabBarIcon: ({ color, size }) => (

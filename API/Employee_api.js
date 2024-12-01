@@ -83,3 +83,27 @@ export const getUserRole = async () => {
     throw error;
   }
 };
+
+// Dodawanie komentarza do zlecenia
+export const addCommentToOrder = async (orderId, comment) => {
+  try {
+    const token = await getAuthToken(); // Pobierz token autoryzacji
+    const response = await axios.post(
+      `${API_BASE_URL}/api/Employee/reservations/${orderId}/comment`,
+      JSON.stringify(comment), // Komentarz jako JSON string
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json', // Nagłówek Content-Type jako application/json
+        },
+      }
+    );
+    return response.data; // Zwracamy odpowiedź serwera
+  } catch (error) {
+    console.error(
+      'Błąd podczas dodawania komentarza do zlecenia:',
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};

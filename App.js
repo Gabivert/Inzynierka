@@ -17,7 +17,9 @@ import AccountEditScreen from './screens/Customer/AccountEditScreen';
 import ManagerTabNavigator from './screens/Manager/navigation/ManagerTabNavigator';
 import ManagerOrderDetailsScreen from './screens/Manager/ManagerOrderDetailsScreen';
 import PartsDetailsScreen from './screens/Employee/PartsDetailsScreen';
+import CreateProtocolScreen from './screens/Employee/CreateProtocolScreen';
 import './global.css';
+
 
 const Stack = createNativeStackNavigator()
 
@@ -87,13 +89,19 @@ export default function App() {
         />
         <Stack.Screen name="ManagerTabNavigator" component={ManagerTabNavigator} options={{ headerShown: false }} />
         <Stack.Screen
-        name="ManagerOrderDetails"
-        component={ManagerOrderDetailsScreen}
-        options={{ title: 'Szczegóły zlecenia', headerShown: false }}
-      />
-      <Stack.Screen
+          name="ManagerOrderDetails"
+          component={ManagerOrderDetailsScreen}
+          options={{ title: 'Szczegóły zlecenia', headerShown: false }}
+        />
+        <Stack.Screen
           name="PartsDetails"
           component={PartsDetailsScreen}
+          optio
+          ns={{ title: 'Edytuj dane', headerShown: false }}
+        />
+        <Stack.Screen
+          name="CreateProtocol"
+          component={CreateProtocolScreen}
           options={{ title: 'Edytuj dane', headerShown: false }}
         />
       </Stack.Navigator>
