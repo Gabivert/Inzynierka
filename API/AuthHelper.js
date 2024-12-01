@@ -13,3 +13,17 @@ export const getAuthToken = async () => {
     throw error;
   }
 };
+
+// Funkcja wylogowania
+export const logout = async () => {
+  try {
+    // Usuń token z pamięci lokalnej
+    await AsyncStorage.removeItem('token');
+    // Usuń rolę użytkownika z pamięci lokalnej
+    await AsyncStorage.removeItem('role');
+    console.log('Wylogowano pomyślnie');
+  } catch (error) {
+    console.error('Błąd podczas wylogowania:', error.message);
+    throw error; // Rzucenie błędu w przypadku problemów
+  }
+};

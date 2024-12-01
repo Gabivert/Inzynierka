@@ -19,11 +19,29 @@ export default function AccountEditScreen({ route, navigation }) {
 
   const validateForm = () => {
     const errors = {};
-    if (!form.firstName) errors.firstName = 'Imię jest wymagane';
-    if (!form.lastName) errors.lastName = 'Nazwisko jest wymagane';
-    if (!form.address) errors.address = 'Adres jest wymagany';
-    if (!form.phoneNumber) errors.phoneNumber = 'Numer telefonu jest wymagany';
-    if (!verifyPasswordField) errors.verifyPasswordField = 'Hasło weryfikacyjne jest wymagane';
+    if (!form.firstName) {
+      errors.firstName = 'Imię jest wymagane';
+    } else if (form.firstName.length > 20) {
+      errors.firstName = 'Imię nie może mieć więcej niż 20 znaków';
+    }
+    if (!form.lastName) {
+      errors.lastName = 'Nazwisko jest wymagane';
+    } else if (form.lastName.length > 25) {
+      errors.lastName = 'Nazwisko nie może mieć więcej niż 25 znaków';
+    }
+    if (!form.address) {
+      errors.address = 'Adres jest wymagany';
+    } else if (form.address.length > 40) {
+      errors.address = 'Adres nie może mieć więcej niż 40 znaków';
+    }
+    if (!form.phoneNumber) {
+      errors.phoneNumber = 'Numer telefonu jest wymagany';
+    } else if (!/^\d{9}$/.test(form.phoneNumber)) {
+      errors.phoneNumber = 'Numer telefonu musi składać się z 9 cyfr';
+    }
+    if (!verifyPasswordField) {
+      errors.verifyPasswordField = 'Hasło weryfikacyjne jest wymagane';
+    }
     return errors;
   };
 

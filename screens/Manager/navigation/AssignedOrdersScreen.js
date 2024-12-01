@@ -12,7 +12,7 @@ export default function LogoutScreen({ navigation }) {
       Alert.alert('Wylogowano', 'Zostałeś pomyślnie wylogowany.');
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Welcome' }], // Powrót do ekranu powitalnego
+        routes: [{ name: 'EmployeeLogin' }], // Powrót do ekranu powitalnego
       });
     } catch (error) {
       console.error('Błąd podczas wylogowywania:', error.message);

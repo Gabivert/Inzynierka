@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { fetchUserProfile, deleteUserAccount } from '../../../API/Client_api';
 import CustomButton from '../../../components/CustomButton';
+import { logout } from '../../../API/AuthHelper'; // Import funkcji logout
 
 export default function AccountScreen({ navigation }) {
   const [user, setUser] = useState(null); // Przechowywanie danych użytkownika
@@ -56,6 +57,20 @@ export default function AccountScreen({ navigation }) {
         },
       ]
     );
+  };
+
+  // Funkcja do obsługi wylogowania
+  const handleLogout = async () => {
+    try {
+      await logout(); // Usunięcie tokenu
+      Alert.alert('Wylogowano', 'Zostałeś pomyślnie wylogowany.');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }], // Powrót do ekranu logowania
+      });
+    } catch (error) {
+      Alert.alert('Błąd', 'Nie udało się wylogować. Spróbuj ponownie.');
+    }
   };
 
   // Wczytaj dane użytkownika przy pierwszym renderze
@@ -114,6 +129,15 @@ export default function AccountScreen({ navigation }) {
             title="Usuń konto"
             onPress={handleDeleteAccount}
             className="bg-red-600"
+          />
+        </View>
+
+        {/* Sekcja: Wylogowanie */}
+        <View className="px-4 py-4">
+          <CustomButton
+            title="Wyloguj się"
+            onPress={handleLogout}
+            className="bg-gray-500"
           />
         </View>
       </SafeAreaView>

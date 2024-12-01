@@ -22,7 +22,8 @@ export const loginEmployeeOrManager = async (email, password) => {
   
       // Zapisujemy token w pamięci lokalnej
       await AsyncStorage.setItem('token', token);
-  
+      await AsyncStorage.setItem('role', decodedToken.role); // Zapisz rolę
+
       return { token, role: decodedToken.role }; // Zwracamy token i rolę
     } catch (error) {
       console.error('Błąd logowania:', error.response?.data || error.message);
@@ -68,3 +69,17 @@ export const markOrderAsComplete = async (orderId) => {
     throw error;
   }
 }
+
+// Funkcja pomocnicza do odczytu roli
+export const getUserRole = async () => {
+  try {
+    const role = await AsyncStorage.getItem('role');
+    if (!role) {
+      throw new Error('Rola nie została znaleziona w pamięci lokalnej.');
+    }
+    return role;
+  } catch (error) {
+    console.error('Błąd podczas pobierania roli użytkownika:', error.message);
+    throw error;
+  }
+};

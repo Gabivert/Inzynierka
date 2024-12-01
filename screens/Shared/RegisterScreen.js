@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import { registerUser } from '../../API/Client_api';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const RegisterScreen = ({ navigation }) => {
   const [form, setForm] = useState({
@@ -57,6 +58,7 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <ScrollView className="flex-1 px-4 py-6 bg-custom-light">
+      <SafeAreaView>
       <Text className="text-2xl font-bold text-black text-center mb-6">
         Zarejestruj się do systemu
       </Text>
@@ -125,6 +127,7 @@ const RegisterScreen = ({ navigation }) => {
           <Text className="text-custom-dark text-lg font-semibold">Zaloguj się teraz</Text>
         </TouchableOpacity>
       </View>
+      </SafeAreaView>
     </ScrollView>
   );
 };
