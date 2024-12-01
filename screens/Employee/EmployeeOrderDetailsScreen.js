@@ -17,6 +17,7 @@ export default function EmployeeOrderDetailsScreen({ route, navigation }) {
   // Pobranie szczegółów zlecenia
   const loadOrderDetails = async () => {
     try {
+      setLoading(true); // Włącz ładowanie
       const details = await fetchOrderDetails(orderId);
       setOrderDetails(details);
     } catch (error) {
@@ -28,8 +29,11 @@ export default function EmployeeOrderDetailsScreen({ route, navigation }) {
   };
 
   useEffect(() => {
-    loadOrderDetails();
-  }, [orderId]);
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadOrderDetails(); // Odśwież dane po powrocie na ekran
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   // Funkcja dodawania części
   const handleAddPart = async () => {

@@ -94,7 +94,7 @@ export default function App() {
       <Stack.Screen
           name="PartsDetails"
           component={PartsDetailsScreen}
-          options={{ title: 'Edytuj dane', headerShown: true }}
+          options={{ title: 'Edytuj dane', headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

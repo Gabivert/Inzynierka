@@ -73,15 +73,14 @@ export default function PartsDetailsScreen({ route, navigation }) {
   return (
     <ScrollView className="flex-1 bg-custom-light p-4">
       <SafeAreaView>
-        <Text className="text-2xl font-bold text-black text-center mb-6">Edycja części</Text>
+        <Text className="text-lg font-bold text-black text-center mb-6">Wybierz część do edycji lub usunięcia</Text>
 
         {/* Lista części */}
         <View className="bg-white p-4 mb-6 rounded-lg shadow">
-          <Text className="text-lg font-bold">Części</Text>
           {parts.map((part) => (
             <CustomButton
               key={part.id}
-              title={`Wybierz: ${part.name}`}
+              title={`${part.name}`}
               onPress={() => handleSelectPart(part)}
               className="bg-gray-300 mb-2"
             />
