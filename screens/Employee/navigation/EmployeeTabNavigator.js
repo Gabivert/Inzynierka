@@ -8,6 +8,7 @@ import EmployeeHomeScreen from './EmployeeHomeScreen';
 import TasksScreen from './EmployeeOrderScreen';
 import AccountEmployeeScreen from './EmployeeAccountScreen';
 import HandOverProtocolScreen from './HandOverProtocolScreen';
+import EmployeeOrderScreen from './EmployeeOrderScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -55,7 +56,7 @@ const EmployeeTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={EmployeeHomeScreen} />
-      <Tab.Screen name="Tasks" component={TasksScreen} />
+      <Tab.Screen name="Tasks" component={EmployeeOrderScreen} />
       <Tab.Screen name="Profile" component={AccountEmployeeScreen} />
       <Tab.Screen
         name="HandOverProtocol"

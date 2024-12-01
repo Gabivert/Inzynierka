@@ -78,7 +78,7 @@ export default function App() {
         <Stack.Screen
           name="EmployeeOrderDetails"
           component={EmployeeOrderDetailsScreen}
-          options={{ title: 'Szczegóły zlecenia', headerShown: true }}
+          options={{ title: 'Szczegóły zlecenia', headerShown: false }}
         />
         <Stack.Screen
           name="AccountEdit"

@@ -139,7 +139,7 @@ export default function ManagerOrderDetailsScreen({ route, navigation }) {
 
       {/* Modal z listą pracowników */}
       <Modal visible={isModalVisible} transparent animationType="slide">
-        <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
+        <View className="flex-1 justify-center items-center bg-custom-light bg-opacity-50">
           <View className="w-3/4 bg-white rounded-lg p-4">
             <Text className="text-lg font-bold mb-4">Wybierz pracownika</Text>
             <FlatList
