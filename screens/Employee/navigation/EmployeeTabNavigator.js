@@ -57,7 +57,6 @@ const EmployeeTabNavigator = () => {
     >
       <Tab.Screen name="Home" component={EmployeeHomeScreen} />
       <Tab.Screen name="Tasks" component={EmployeeOrderScreen} />
-      <Tab.Screen name="Profile" component={AccountEmployeeScreen} />
       <Tab.Screen
         name="HandOverProtocol"
         component={ProtocolOrdersScreen}
@@ -68,6 +67,7 @@ const EmployeeTabNavigator = () => {
           ),
         }}
       />
+      <Tab.Screen name="Profile" component={AccountEmployeeScreen} />
     </Tab.Navigator>
   );
 };

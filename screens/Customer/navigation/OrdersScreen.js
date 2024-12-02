@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import CustomButton from '../../../components/CustomButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { fetchClientOrders } from '../../../API/Order_api'; // Import funkcji z API
@@ -10,7 +9,7 @@ export default function OrdersScreen({ navigation }) {
   const [loading, setLoading] = useState(false); // Stan ładowania
 
   // Funkcja pobierania zleceń
-  const fetchOrders = async () => {
+  const loadOrders = async () => {
     try {
       setLoading(true);
       const ordersData = await fetchClientOrders(); // Pobranie danych z API
@@ -22,12 +21,20 @@ export default function OrdersScreen({ navigation }) {
     }
   };
 
-  // Pobieranie zleceń przy wejściu na ekran
-  useFocusEffect(
-    useCallback(() => {
-      fetchOrders();
-    }, [])
-  );
+  // Funkcja odświeżająca listę zleceń
+  const refreshOrders = async () => {
+    try {
+      const updatedOrders = await fetchClientOrders(); // Pobranie aktualnych danych
+      console.log('Odświeżone zlecenia:', updatedOrders);
+      setOrders(updatedOrders); // Ustawienie nowej listy zleceń
+    } catch (error) {
+      console.error('Błąd podczas odświeżania zleceń:', error.message);
+    }
+  };
+
+  useEffect(() => {
+    loadOrders(); // Załaduj dane przy pierwszym renderowaniu ekranu
+  }, []);
 
   // Renderowanie pojedynczego zlecenia
   const renderOrder = ({ item }) => (
@@ -68,6 +75,13 @@ export default function OrdersScreen({ navigation }) {
         title="Dodaj zlecenie"
         onPress={() => navigation.navigate('AddOrder')}
         className="bg-blue-500 mb-6"
+      />
+
+      {/* Przycisk odświeżania */}
+      <CustomButton
+        title="Odśwież zlecenia"
+        onPress={refreshOrders}
+        className="bg-green-500 mb-6"
       />
 
       {loading ? (

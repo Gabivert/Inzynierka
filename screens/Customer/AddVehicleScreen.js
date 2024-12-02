@@ -14,44 +14,64 @@ export default function AddVehicleScreen({ navigation }) {
     registrationNumber: '',
   });
 
- const handleAddVehicle = async () => {
-  const { brand, model, productionYear, vin, registrationNumber } = form;
+  const handleAddVehicle = async () => {
+    const { brand, model, productionYear, vin, registrationNumber } = form;
 
-  console.log("Rocznik przed wysłaniem:", productionYear); // Sprawdzenie wartości przed wysłaniem
+    // Walidacja formularza
+    if (!brand || !model || !productionYear || !vin || !registrationNumber) {
+      Alert.alert('Błąd', 'Uzupełnij wszystkie pola!');
+      return;
+    }
 
-  // Walidacja formularza
-  if (!brand || !model || !productionYear || !vin || !registrationNumber) {
-    Alert.alert('Błąd', 'Uzupełnij wszystkie pola!');
-    return;
-  }
+    if (brand.length > 20) {
+      Alert.alert('Błąd', 'Marka może mieć maksymalnie 20 znaków.');
+      return;
+    }
 
-  // Konwersja rocznika na liczbę
-  const productionYearInt = parseInt(productionYear, 10);
+    if (model.length > 25) {
+      Alert.alert('Błąd', 'Model może mieć maksymalnie 25 znaków.');
+      return;
+    }
 
-  if (isNaN(productionYearInt) || productionYearInt < 1900 || productionYearInt > 2030) {
-    Alert.alert('Błąd', 'Podaj prawidłowy rocznik (1900-2030).');
-    return;
-  }
+    if (!/^\d{4}$/.test(productionYear)) {
+      Alert.alert('Błąd', 'Rocznik musi być 4-cyfrową liczbą.');
+      return;
+    }
 
-  try {
-    const vehicleData = { 
-      brand, 
-      model, 
-      productionYear: productionYearInt, // Wysłanie rocznika jako liczby
-      vin, 
-      registrationNumber 
-    };
+    const productionYearInt = parseInt(productionYear, 10);
+    if (isNaN(productionYearInt) || productionYearInt < 1900 || productionYearInt > 2030) {
+      Alert.alert('Błąd', 'Podaj prawidłowy rocznik (1900-2030).');
+      return;
+    }
 
-    await addVehicle(vehicleData); 
+    if (vin.length !== 17) {
+      Alert.alert('Błąd', 'VIN musi mieć dokładnie 17 znaków.');
+      return;
+    }
 
-    Alert.alert('Sukces', 'Pojazd został dodany!');
-    navigation.goBack(); // Powrót do zakładki pojazdów
-  } catch (error) {
-    Alert.alert('Błąd', 'Nie udało się dodać pojazdu.');
-    console.error('Błąd API:', error.response?.data || error.message);
-  }
-};
+    if (registrationNumber.length > 8) {
+      Alert.alert('Błąd', 'Nr rejestracyjny może mieć maksymalnie 8 znaków.');
+      return;
+    }
 
+    try {
+      const vehicleData = {
+        brand,
+        model,
+        productionYear: productionYearInt, // Wysłanie rocznika jako liczby
+        vin,
+        registrationNumber,
+      };
+
+      await addVehicle(vehicleData);
+
+      Alert.alert('Sukces', 'Pojazd został dodany!');
+      navigation.goBack(); // Powrót do zakładki pojazdów
+    } catch (error) {
+      Alert.alert('Błąd', 'Nie udało się dodać pojazdu.');
+      console.error('Błąd API:', error.response?.data || error.message);
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-custom-light p-4">

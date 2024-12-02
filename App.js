@@ -20,7 +20,6 @@ import PartsDetailsScreen from './screens/Employee/PartsDetailsScreen';
 import CreateProtocolScreen from './screens/Employee/CreateProtocolScreen';
 import './global.css';
 
-
 const Stack = createNativeStackNavigator()
 
 export default function App() {

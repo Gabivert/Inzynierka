@@ -7,12 +7,12 @@ export const addProtocolDescription = async (orderId, description) => {
     try {
         const token = await getAuthToken();
         const response = await axios.post(
-            `${API_BASE_URL}/api/protocol/${orderId}/description`,
-            { description },
+            `${API_BASE_URL}/api/Protocol/${orderId}/description`,
+            description, // Przekazujemy tylko string
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json', // Nadal ustawiamy typ JSON
                 },
             }
         );
@@ -27,7 +27,7 @@ export const addProtocolDescription = async (orderId, description) => {
 export const fetchProtocolData = async (orderId) => {
     try {
         const token = await getAuthToken();
-        const response = await axios.get(`${API_BASE_URL}/api/protocol/${orderId}`, {
+        const response = await axios.get(`${API_BASE_URL}/api/Protocol/${orderId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -44,7 +44,7 @@ export const generateProtocolPDF = async (orderId) => {
     try {
         const token = await getAuthToken();
         const response = await axios.post(
-            `${API_BASE_URL}/api/protocol/${orderId}/generate-pdf`,
+            `${API_BASE_URL}/api/Protocol/${orderId}/generate-pdf`,
             {},
             {
                 headers: {

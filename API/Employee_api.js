@@ -40,6 +40,7 @@ export const fetchEmployeeReservations = async () => {
         Authorization: `Bearer ${token}`, // Dodaj token do nagłówków
       },
     });
+    console.log("Dane przypisanych zleceń:", response.data); // Logowanie odpowiedzi
     return response.data; // Zwracamy dane o zleceniach
   } catch (error) {
     console.error('Błąd podczas pobierania zleceń przypisanych do mechanika:', error.message);

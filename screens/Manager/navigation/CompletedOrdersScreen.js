@@ -21,9 +21,14 @@ export default function CompletedOrdersScreen({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    loadCompletedOrders(); // Załaduj historię zleceń przy montowaniu komponentu
-  }, []);
+   // Nasłuchiwanie na zdarzenie "focus" (odświeżanie przy każdym wejściu na ekran)
+   useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadCompletedOrders(); // Odśwież dane przy wejściu na ekran
+    });
+
+    return unsubscribe; // Oczyść nasłuchiwacz przy odmontowywaniu komponentu
+  }, [navigation]);
 
   const renderOrder = ({ item }) => (
     <View className="bg-white p-4 mb-4 rounded-lg shadow">

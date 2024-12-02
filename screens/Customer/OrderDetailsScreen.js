@@ -3,6 +3,8 @@ import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomButton from '../../components/CustomButton';
 import { fetchOrderDetails } from '../../API/Order_api'; // Import funkcji z API
+import { downloadFile } from "../../API/Client_api";
+import { redirectToPayPal } from '../../API/Client_api'
 
 export default function OrderDetailsScreen({ route }) {
   const { orderId } = route.params;
@@ -103,10 +105,32 @@ export default function OrderDetailsScreen({ route }) {
           <Text className="text-sm text-gray-600">Całkowity koszt: {orderDetails.totalOrderCost} PLN</Text>
         </View>
 
-        {/* Przyciski */}
-        <CustomButton title="Pobierz protokół" onPress={() => alert('Protokół pobrany')} className="mb-4" />
-        <CustomButton title="Pobierz fakturę" onPress={() => alert('Faktura pobrana')} className="mb-4" />
-        <CustomButton title="Zapłać" onPress={() => alert('Przejście do płatności')} />
+         {/* Przyciski */}
+         <CustomButton
+          title="Pobierz protokół"
+          onPress={async () => {
+            try {
+              await downloadFile(`/api/Reservation/${orderId}/protocol`, `protocol_${orderId}.pdf`);
+              console.log("Długość danych:", response.data.byteLength);
+            } catch (error) {
+              Alert.alert("Błąd", "Nie udało się pobrać protokołu.");
+            }
+          }}
+          className="mb-4"
+        />
+        <CustomButton
+          title="Pobierz fakturę"
+          onPress={async () => {
+            try {
+              await downloadFile(`/api/Reservation/${orderId}/invoice`, `invoice_${orderId}.pdf`);
+              console.log("Długość danych:", response.data.byteLength);
+            } catch (error) {
+              Alert.alert("Błąd", "Nie udało się pobrać faktury.");
+            }
+          }}
+          className="mb-4"
+        />
+        <CustomButton title="Zapłać" onPress={redirectToPayPal} />
       </SafeAreaView>
     </ScrollView>
   );

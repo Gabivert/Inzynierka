@@ -49,6 +49,7 @@ export default function AssignEmployeeScreen({ navigation }) {
   return (
     <SafeAreaView className="flex-1 bg-custom-light p-4">
       <Text className="text-2xl font-bold text-black text-center mb-6">Przypisz pracownika</Text>
+      <Text className="text-2s font-bold text-black text-center mb-6">(zlecenia ze statusem "oczekuje")</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (

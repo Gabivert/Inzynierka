@@ -2,6 +2,12 @@ import axios from 'axios';
 import { API_BASE_URL } from '@env'; // Zmienna środowiskowa
 import { getAuthToken } from './AuthHelper'; // Import pomocniczej funkcji
 import { jwtDecode } from "jwt-decode";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
+import { Buffer } from "buffer"; // Import pakietu buffer
+import * as Linking from 'expo-linking';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 // Logowanie klienta
 export const loginUser = async (email, password) => {
@@ -126,4 +132,88 @@ export const deleteUserAccount = async (userId) => {
   }
 };
 
+// // Pobieranie protokołu przyjęcia pojazdu
+// export const fetchProtocolLink = async (orderId) => {
+//   try {
+//       const token = await getAuthToken();
+//       const response = await axios.get(`${API_BASE_URL}/api/Reservation/${orderId}/protocol`, {
+//           headers: {
+//               Authorization: `Bearer ${token}`,
+//           },
+//       });
+//       return response.data; // Zakładamy, że zwraca link do protokołu
+//   } catch (error) {
+//       console.error('Błąd podczas pobierania protokołu:', error.message);
+//       throw error;
+//   }
+// };
 
+// // Pobieranie faktury
+// export const fetchInvoiceLink = async (orderId) => {
+//   try {
+//       const token = await getAuthToken();
+//       const response = await axios.get(`${API_BASE_URL}/api/Reservation/${orderId}/invoice`, {
+//           headers: {
+//               Authorization: `Bearer ${token}`,
+//           },
+//       });
+//       return response.data; // Zakładamy, że zwraca link do faktury
+//   } catch (error) {
+//       console.error('Błąd podczas pobierania faktury:', error.message);
+//       throw error;
+//   }
+// };
+
+// Pobieranie i zapisywanie pliku (protokół lub faktura)
+export const downloadFile = async (endpoint, filename) => {
+  try {
+      const token = await getAuthToken();
+
+      // Pobierz plik jako binarne dane
+      const response = await axios.get(`${API_BASE_URL}${endpoint}`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              "Cache-Control": "no-cache",
+          },
+          responseType: "arraybuffer", // Pobieranie danych jako ArrayBuffer
+      });
+
+      // Konwersja danych binarnych na Base64
+      const base64Data = Buffer.from(response.data, "binary").toString("base64");
+
+      // Ścieżka do zapisu pliku
+      const fileUri = `${FileSystem.documentDirectory}${filename}`;
+
+      // Zapisz plik w formacie Base64
+      await FileSystem.writeAsStringAsync(fileUri, base64Data, {
+          encoding: FileSystem.EncodingType.Base64,
+      });
+
+      // Udostępnij plik za pomocą Expo Sharing
+      if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(fileUri);
+      } else {
+          console.log("Udostępnianie plików nie jest dostępne na tym urządzeniu.");
+      }
+  } catch (error) {
+      console.error("Błąd podczas pobierania pliku:", error.message);
+      throw error;
+  }
+};
+
+// Przekierowanie na stronę paypala
+const redirectToPayPal = async () => {
+  const payPalUrl = 'https://www.paypal.com'; // Statyczny link PayPala lub strona płatności
+
+  try {
+    const supported = await Linking.canOpenURL(payPalUrl);
+    if (supported) {
+      await Linking.openURL(payPalUrl); // Otwórz PayPala w domyślnej przeglądarce
+    } else {
+      Alert.alert('Błąd', 'Nie można otworzyć strony PayPala.');
+    }
+  } catch (error) {
+    console.error('Błąd podczas przekierowania do PayPala:', error);
+    Alert.alert('Błąd', 'Wystąpił problem z przekierowaniem do PayPala.');
+  }
+};
