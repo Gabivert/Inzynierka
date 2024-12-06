@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AssignEmployeeScreen from './AssignEmployeeScreen';
 import UnfinishedOrdersScreen from './UnfinishedOrdersScreen';
 import CompletedOrdersScreen from './CompletedOrdersScreen';
-import AssignedOrdersScreen from './AssignedOrdersScreen';
+import ManagerLogout from './ManagerLogout';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Tab = createBottomTabNavigator();
@@ -24,7 +24,7 @@ export default function ManagerTabNavigator() {
             case 'CompletedOrders':
               iconName = 'checkmark-done-outline';
               break;
-            case 'AssignedOrders':
+            case 'ManagerLogout':
               iconName = 'log-out-outline';
               break;
             default:
@@ -59,8 +59,8 @@ export default function ManagerTabNavigator() {
         }}
       />
       <Tab.Screen
-        name="AssignedOrders"
-        component={AssignedOrdersScreen}
+        name="ManagerLogout"
+        component={ManagerLogout}
         options={{
           title: 'Wyloguj',
         }}

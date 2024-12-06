@@ -41,7 +41,7 @@ export default function CompletedOrdersScreen({ navigation }) {
       {/* Przycisk szczegółów */}
       <CustomButton
         title="Szczegóły"
-        onPress={() => navigation.navigate('ManagerOrderDetails', { orderId: item.id })}
+        onPress={() => navigation.navigate('ManagerHistoryDetails', { orderId: item.id })}
         className="bg-blue-500 mt-4"
       />
     </View>

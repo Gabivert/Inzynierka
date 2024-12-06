@@ -18,6 +18,7 @@ import ManagerTabNavigator from './screens/Manager/navigation/ManagerTabNavigato
 import ManagerOrderDetailsScreen from './screens/Manager/ManagerOrderDetailsScreen';
 import PartsDetailsScreen from './screens/Employee/PartsDetailsScreen';
 import CreateProtocolScreen from './screens/Employee/CreateProtocolScreen';
+import ManagerHistoryDetailsScreen from './screens/Manager/ManagerHistoryDetailsScreen';
 import './global.css';
 
 const Stack = createNativeStackNavigator()
@@ -102,6 +103,11 @@ export default function App() {
           name="CreateProtocol"
           component={CreateProtocolScreen}
           options={{ title: 'Edytuj dane', headerShown: false }}
+        />
+        <Stack.Screen
+          name="ManagerHistoryDetails"
+          component={ManagerHistoryDetailsScreen}
+          options={{ title: 'Szczegóły historii', headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
