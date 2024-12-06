@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, Image } from 'react-native';
+import { Text, TextInput, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { uploadProtocolPhoto, addProtocolDescription, generateProtocolPDF } from '../../API/Protocol_api';
+import CustomButton from '../../components/CustomButton'; // Przyciski
 import * as ImagePicker from 'expo-image-picker';
 
-export default function CreateProtocolScreen({ route }) {
+export default function CreateProtocolScreen({ route, navigation }) {
   const { orderId } = route.params;
   const [description, setDescription] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
@@ -65,8 +66,8 @@ export default function CreateProtocolScreen({ route }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>Stwórz Protokół Przyjęcia</Text>
+    <SafeAreaView className="flex-1 p-4 bg-custom-light">
+      <Text className="text-2xl font-bold text-black mb-6">Stwórz Protokół Przyjęcia</Text>
 
       {/* Pole opisu */}
       <TextInput
@@ -74,17 +75,22 @@ export default function CreateProtocolScreen({ route }) {
         value={description}
         onChangeText={setDescription}
         multiline
-        style={{ borderWidth: 1, borderColor: 'gray', padding: 8, marginBottom: 16 }}
+        className="border p-2 mb-4 rounded"
       />
-      <Button title="Dodaj opis" onPress={handleAddDescription} />
+      <CustomButton title="Dodaj opis" onPress={handleAddDescription} className="bg-green-500 mb-4" />
 
       {/* Przesyłanie zdjęcia */}
-      {selectedImage && <Image source={{ uri: selectedImage }} style={{ width: 200, height: 200, marginBottom: 16 }} />}
-      <Button title="Wybierz zdjęcie" onPress={pickImage} />
-      <Button title="Prześlij zdjęcie" onPress={handleUploadPhoto} />
+      {selectedImage && <Image source={{ uri: selectedImage }} className="w-full h-40 mb-4 rounded" />}
+      <CustomButton title="Wybierz zdjęcie" onPress={pickImage} className="bg-blue-500 mb-2" />
+      <CustomButton title="Prześlij zdjęcie" onPress={handleUploadPhoto} className="bg-green-500 mb-4" />
 
       {/* Generowanie PDF */}
-      <Button title="Generuj PDF" onPress={handleGeneratePDF} disabled={loading} />
+      <CustomButton
+        title="Generuj PDF"
+        onPress={handleGeneratePDF}
+        disabled={loading}
+        className="bg-purple-500 mb-4"
+      />
     </SafeAreaView>
   );
 }

@@ -91,11 +91,11 @@ export const addCommentToOrder = async (orderId, comment) => {
     const token = await getAuthToken(); // Pobierz token autoryzacji
     const response = await axios.post(
       `${API_BASE_URL}/api/Employee/reservations/${orderId}/comment`,
-      JSON.stringify(comment), // Komentarz jako JSON string
+      { comment }, // Wysyłamy obiekt z polem `comment`
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json', // Nagłówek Content-Type jako application/json
+          'Content-Type': 'application/json', // Typ treści jako JSON
         },
       }
     );
