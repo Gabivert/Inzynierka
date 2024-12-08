@@ -27,6 +27,20 @@ export default function OrderDetailsScreen({ route }) {
     fetchDetails();
   }, [orderId]);
 
+  const handleDownloadFile = async (fileType, orderId) => {
+    try {
+      const fileName = `${fileType}_${orderId}.pdf`; // Ustalamy nazwę pliku na podstawie typu i ID zlecenia
+  
+      // Pobieranie pliku w zależności od typu
+      await downloadFile(`/api/Reservation/${orderId}/${fileType}`, fileName);
+  
+      console.log('Plik zapisany w:', `${FileSystem.documentDirectory}${fileName}`);
+    } catch (error) {
+      // W przypadku błędu, pokazujemy komunikat
+      Alert.alert('Błąd', error.message);
+    }
+  };
+
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
@@ -105,31 +119,19 @@ export default function OrderDetailsScreen({ route }) {
           <Text className="text-sm text-gray-600">Całkowity koszt: {orderDetails.totalOrderCost} PLN</Text>
         </View>
 
-         {/* Przyciski */}
-         <CustomButton
+        {/* Przyciski */}
+        <CustomButton
           title="Pobierz protokół"
-          onPress={async () => {
-            try {
-              await downloadFile(`/api/Reservation/${orderId}/protocol`, `protocol_${orderId}.pdf`);
-              console.log("Długość danych:", response.data.byteLength);
-            } catch (error) {
-              Alert.alert("Błąd", "Nie udało się pobrać protokołu.");
-            }
-          }}
+          onPress={() => handleDownloadFile('protocol', orderId)} // Wywołanie funkcji dla protokołu
           className="mb-4"
         />
+
         <CustomButton
           title="Pobierz fakturę"
-          onPress={async () => {
-            try {
-              await downloadFile(`/api/Reservation/${orderId}/invoice`, `invoice_${orderId}.pdf`);
-              console.log("Długość danych:", response.data.byteLength);
-            } catch (error) {
-              Alert.alert("Błąd", "Nie udało się pobrać faktury.");
-            }
-          }}
+          onPress={() => handleDownloadFile('invoice', orderId)} // Wywołanie funkcji dla faktury
           className="mb-4"
         />
+
         <CustomButton title="Zapłać" onPress={redirectToPayPal} />
       </SafeAreaView>
     </ScrollView>

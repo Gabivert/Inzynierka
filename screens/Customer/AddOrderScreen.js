@@ -102,7 +102,9 @@ export default function AddOrderScreen({ navigation }) {
               }}
               onPress={() => setSelectedCar(item)}
             >
+              <Text style={{ fontWeight: 'bold' }}>{item.brand}</Text>
               <Text>{item.model}</Text>
+              <Text style={{ color: 'gray' }}>{item.registrationNumber}</Text>
             </TouchableOpacity>
           )}
         />
@@ -138,7 +140,9 @@ export default function AddOrderScreen({ navigation }) {
 
         {/* Podsumowanie */}
         <Text className="text-lg font-bold mt-4 mb-2">Podsumowanie</Text>
-        <Text>Samochód: {selectedCar?.model || 'Nie wybrano'}</Text>
+        <Text>
+          Samochód: {selectedCar ? `${selectedCar.brand} ${selectedCar.model} (${selectedCar.registrationNumber})` : 'Nie wybrano'}
+        </Text>
         <Text>Usługi: {selectedServices.map((s) => s.name).join(', ') || 'Nie wybrano'}</Text>
         <Text>Czas naprawy: {totalTime} min</Text>
         <Text>Koszt: {totalCost} PLN</Text>

@@ -167,37 +167,46 @@ export const deleteUserAccount = async (userId) => {
 // Pobieranie i zapisywanie pliku (protokół lub faktura)
 export const downloadFile = async (endpoint, filename) => {
   try {
-      const token = await getAuthToken();
+    const token = await getAuthToken();
 
-      // Pobierz plik jako binarne dane
-      const response = await axios.get(`${API_BASE_URL}${endpoint}`, {
-          headers: {
-              Authorization: `Bearer ${token}`,
-              "Cache-Control": "no-cache",
-          },
-          responseType: "arraybuffer", // Pobieranie danych jako ArrayBuffer
-      });
+    const response = await axios.get(`${API_BASE_URL}${endpoint}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Cache-Control': 'no-cache',
+      },
+      responseType: 'json', // Pobieramy odpowiedź jako JSON
+    });
 
-      // Konwersja danych binarnych na Base64
-      const base64Data = Buffer.from(response.data, "binary").toString("base64");
+    // Sprawdzenie, czy ProtocolLink jest null lub nie istnieje
+    if (!response.data || !response.data.ProtocolLink) {
+      throw new Error('Protokół nie został wygenerowany.');
+    }
 
-      // Ścieżka do zapisu pliku
-      const fileUri = `${FileSystem.documentDirectory}${filename}`;
+    // Konwersja danych binarnych na Base64 (jeśli ProtocolLink nie jest null)
+    const fileUri = response.data.ProtocolLink;
 
-      // Zapisz plik w formacie Base64
-      await FileSystem.writeAsStringAsync(fileUri, base64Data, {
-          encoding: FileSystem.EncodingType.Base64,
-      });
+    // Zapisanie pliku (zakładając, że link do pliku jest dostępny)
+    const fileData = await axios.get(fileUri, { responseType: 'arraybuffer' });
 
-      // Udostępnij plik za pomocą Expo Sharing
-      if (await Sharing.isAvailableAsync()) {
-          await Sharing.shareAsync(fileUri);
-      } else {
-          console.log("Udostępnianie plików nie jest dostępne na tym urządzeniu.");
-      }
+    const base64Data = Buffer.from(fileData.data, 'binary').toString('base64');
+    const fileLocation = `${FileSystem.documentDirectory}${filename}`;
+
+    await FileSystem.writeAsStringAsync(fileLocation, base64Data, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    // Udostępnianie pliku
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(fileLocation);
+    } else {
+      console.log('Udostępnianie plików nie jest dostępne na tym urządzeniu.');
+    }
+
   } catch (error) {
-      console.error("Błąd podczas pobierania pliku:", error.message);
-      throw error;
+    console.error('Błąd podczas pobierania pliku:', error.message);
+
+    // Wyświetlanie komunikatu w przypadku błędu
+    Alert.alert('Błąd pobierania pliku', error.message);
   }
 };
 

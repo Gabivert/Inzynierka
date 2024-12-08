@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import CustomButton from '../../components/CustomButton';
 import { fetchOrderDetails } from '../../API/Order_api'; // Funkcja pobierająca szczegóły zlecenia
-import { downloadFile } from '../../API/Protocol_api'; // Funkcja pobierająca pliki
+import { downloadFile } from '../../API/Client_api'; // Funkcja pobierająca pliki
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ManagerHistoryDetailsScreen({ route }) {
@@ -38,6 +38,16 @@ export default function ManagerHistoryDetailsScreen({ route }) {
       </View>
     );
   }
+
+  const handleDownloadFile = async (fileType, orderId) => {
+    try {
+      const fileName = `${fileType}_${orderId}.pdf`; // Ustalamy nazwę pliku na podstawie typu i ID zlecenia
+      await downloadFile(`/api/Reservation/${orderId}/${fileType}`, fileName);
+      console.log('Plik zapisany w:', `${FileSystem.documentDirectory}${fileName}`);
+    } catch (error) {
+      Alert.alert('Błąd', `Nie udało się pobrać ${fileType}.`);
+    }
+  };
 
   return (
     <ScrollView className="flex-1 bg-custom-light p-4">
@@ -94,16 +104,16 @@ export default function ManagerHistoryDetailsScreen({ route }) {
 
         {/* Części */}
         <View className="bg-white p-4 mb-6 rounded-lg shadow">
-        <Text className="text-lg font-bold mt-4 mb-2">Użyte części:</Text>
-        {orderDetails.parts.length > 0 ? (
-          orderDetails.parts.map((part) => (
-            <Text key={part.id} className="text-sm text-gray-700">
-              - {part.name} x{part.quantity} ({part.price * part.quantity} PLN)
-            </Text>
-          ))
-        ) : (
-          <Text className="text-sm text-gray-500">Brak przypisanych części</Text>
-        )}
+          <Text className="text-lg font-bold mt-4 mb-2">Użyte części:</Text>
+          {orderDetails.parts.length > 0 ? (
+            orderDetails.parts.map((part) => (
+              <Text key={part.id} className="text-sm text-gray-700">
+                - {part.name} x{part.quantity} ({part.price * part.quantity} PLN)
+              </Text>
+            ))
+          ) : (
+            <Text className="text-sm text-gray-500">Brak przypisanych części</Text>
+          )}
         </View>
 
         {/* Koszty */}
@@ -115,26 +125,16 @@ export default function ManagerHistoryDetailsScreen({ route }) {
         </View>
 
         {/* Przyciski */}
+
         <CustomButton
           title="Pobierz protokół"
-          onPress={async () => {
-            try {
-              await downloadFile(`/api/Reservation/${orderId}/protocol`, `protocol_${orderId}.pdf`);
-            } catch (error) {
-              Alert.alert('Błąd', 'Nie udało się pobrać protokołu.');
-            }
-          }}
+          onPress={() => handleDownloadFile('protocol', orderId)} // Wywołanie funkcji dla protokołu
           className="bg-green-500 mt-4"
         />
+
         <CustomButton
           title="Pobierz fakturę"
-          onPress={async () => {
-            try {
-              await downloadFile(`/api/Reservation/${orderId}/invoice`, `invoice_${orderId}.pdf`);
-            } catch (error) {
-              Alert.alert('Błąd', 'Nie udało się pobrać faktury.');
-            }
-          }}
+          onPress={() => handleDownloadFile('invoice', orderId)} // Wywołanie funkcji dla faktury
           className="bg-blue-500 mt-4"
         />
       </SafeAreaView>
