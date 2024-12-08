@@ -39,16 +39,6 @@ export default function ManagerHistoryDetailsScreen({ route }) {
     );
   }
 
-  const handleDownloadFile = async (fileType, orderId) => {
-    try {
-      const fileName = `${fileType}_${orderId}.pdf`; // Ustalamy nazwę pliku na podstawie typu i ID zlecenia
-      await downloadFile(`/api/Reservation/${orderId}/${fileType}`, fileName);
-      console.log('Plik zapisany w:', `${FileSystem.documentDirectory}${fileName}`);
-    } catch (error) {
-      Alert.alert('Błąd', `Nie udało się pobrać ${fileType}.`);
-    }
-  };
-
   return (
     <ScrollView className="flex-1 bg-custom-light p-4">
       <SafeAreaView>
@@ -124,18 +114,28 @@ export default function ManagerHistoryDetailsScreen({ route }) {
           <Text className="text-sm text-gray-600">Całkowity koszt: {orderDetails.totalOrderCost} PLN</Text>
         </View>
 
-        {/* Przyciski */}
-
-        <CustomButton
+          {/* Przyciski */}
+          <CustomButton
           title="Pobierz protokół"
-          onPress={() => handleDownloadFile('protocol', orderId)} // Wywołanie funkcji dla protokołu
-          className="bg-green-500 mt-4"
+          onPress={async () => {
+            try {
+              await downloadFile(`/api/Reservation/${orderId}/protocol`, `protocol_${orderId}.pdf`);
+            } catch (error) {
+              Alert.alert("Błąd", "Nie udało się pobrać protokołu.");
+            }
+          }}
+          className="mb-4"
         />
-
         <CustomButton
           title="Pobierz fakturę"
-          onPress={() => handleDownloadFile('invoice', orderId)} // Wywołanie funkcji dla faktury
-          className="bg-blue-500 mt-4"
+          onPress={async () => {
+            try {
+              await downloadFile(`/api/Reservation/${orderId}/invoice`, `invoice_${orderId}.pdf`);
+            } catch (error) {
+              Alert.alert("Błąd", "Nie udało się pobrać faktury.");
+            }
+          }}
+          className="mb-4"
         />
       </SafeAreaView>
     </ScrollView>

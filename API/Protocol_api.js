@@ -53,7 +53,7 @@ export const generateProtocolPDF = async (orderId) => {
                 },
             }
         );
-        return response.data; // Zwraca link do wygenerowanego PDF-a
+        return response.data;
     } catch (error) {
         console.error('Błąd podczas generowania protokołu PDF:', error.message);
         throw error;
